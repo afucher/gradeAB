@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grade Agile Brazil</title>
+  <style type="text/css">
+  body{
+    font-size: 10.95px;
+    text-align: center;
+  }
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+tr { line-height: 18  px; }
+  </style>
+</head>
+
+<body>
+  <table >
+    <tr>
+      <th></th>
+      {{#each venues}}
+        <th>{{this}}</th>
+      {{/each}}
+    </tr>
+    {{#each scheduleList}}
+      <tr>
+        <td>{{schedule}}</td>
+        {{#each sessions}}
+          <td rowspan={{rowspan}} colspan={{colspan}}>{{name}}</td>
+        {{/each}}
+      </tr>
+    {{/each}}
+  </table>
+</body>
+</html>
