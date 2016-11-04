@@ -1,7 +1,7 @@
 # gradeAB
 
 ## To run
-> Need to config your credentials and sched URL in the [config file](./schedAPI/config.json)  
+> Need to config your credentials and sched URL in the [config file](./schedAPI/config.json) and change it to _config.json_  
 
 ```npm install```  
 ```node index.js```  
