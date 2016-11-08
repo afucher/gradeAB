@@ -11,7 +11,9 @@
   table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
+    font-weight: normal;
 }
+    .smaller{font-size:smaller;}
 tr { line-height: 18  px; }
 .data{font-size: 14px;}
   </style>
@@ -28,9 +30,9 @@ tr { line-height: 18  px; }
     </tr>
     {{#each scheduleList}}
       <tr>
-        <td>{{schedule}}</td>
+        <td class="">{{schedule}}</td>
         {{#each sessions}}
-          <td rowspan={{rowspan}} colspan={{colspan}}>{{name}}</td>
+          <td rowspan={{rowspan}} colspan={{colspan}} class="">{{name}}</td>
         {{/each}}
       </tr>
     {{/each}}

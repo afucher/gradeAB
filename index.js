@@ -7,6 +7,8 @@ const minutesSpace = 5;
 const startHour = "08:00"
 const endHour = "19:00"
 var allSchedules = createHourIntervals(startHour, endHour,minutesSpace);
+var a = true;
+var globalVenues;
 
 /** Retorna as informações do sched e gera os grids em html */
 schedAPI.getSessionExport((err,session) => {
@@ -21,7 +23,7 @@ function processSessionInfo(sessionList){
   var venues = getVenues(sessionList);
   var sessionsByDay = segregateSessionsByDay(sessionList);
   var schedulesByDay = [];
-
+  globalVenues = getVenues(sessionList);
   schedulesByDay = sessionsByDay.map(function(sessionDay, index){
     return {  day : sessionDay.day,
               scheduleList : sortBySchedule(sessionDay.sessionList) ,
@@ -84,13 +86,12 @@ var venuesCtrl = [];
             venue.ocupationNumber+= session.rowspan;
           }else{
             console.log(venue);
-            console.log(session);            
+            console.log(session);
           }
-          
+
           //venuesCtrl[session.venue] += session.rowspan;
         }
       });
-
       venuesCtrl.forEach(function(venue,index){
         if(venue.ocupationNumber == 0){
           let emptySession = {
@@ -128,9 +129,28 @@ var venuesCtrl = [];
     }
   });
   indexToBeRemoved.reverse().forEach((index)=>schedulesOfDay.scheduleList.splice(index, 1));
+
+   /* a = !a;
+    if(a){
+      schedulesOfDay.scheduleList.forEach((sessions)=>{
+       console.log(sessions);
+      })
+
+    }*/
+    schedulesOfDay.scheduleList.forEach((schedule,index)=>{
+      schedulesOfDay.scheduleList[index].sessions = orderSessionsByVenue(schedule.sessions,globalVenues);
+      //console.log(sessions);
+    })
+
   return schedulesOfDay;
 }
 
+function orderSessionsByVenue(sessions, venues){
+  //console.log(sessions);
+  return sessions.sort((a,b)=>{
+    return venues.indexOf(a.venue) - venues.indexOf(b.venue);
+  });
+}
 
 function segregateSessionsByDay(sessionList){
 var sessionsByDay = [];
@@ -171,7 +191,7 @@ function getVenues(sessionList){
 function isForAll(session){
   var has = false;
   var sessionName = session.name.toUpperCase();
-  
+
   //Primeiro verificamos pelo nome, foi a única informação que consegui pegar
   ["Agile Alliance Brasil: Reunião Membros","COFFEE BREAK","ALMOÇO","Open Space - Traga suas Ideias!","ABERTURA","Recepção e Welcome Coffee","KEYNOTE","ENCERRAMENTO","RECEPÇÃO"].forEach((str) => {
     has = has || sessionName.trim() === str.toUpperCase();
@@ -191,7 +211,7 @@ function generateGrid(schedulesByDay){
       fs.readFile('./template/grid.html', 'utf-8', function(error, source){
         var template = handlebars.compile(source);
         var html = template(valor);
-        
+
         fs.writeFile('./out/index'+valor.day+'.html', html, (err) => {
           if (err) throw err;
         });
@@ -211,7 +231,7 @@ function createHourIntervals(from, until, interval){
     //"01/01/2001" is just an arbitrary date
     var until = Date.parse("01/01/2001 " + until);
     var from = Date.parse("01/01/2001 " + from);
-    
+
     var max = (Math.abs(until-from) / (60*60*1000))*60/interval;
     var time = new Date(from);
     var intervals = [];
